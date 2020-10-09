@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AppInfo"
+    android:background="@drawable/background">
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="210dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="131dp"
+        android:layout_marginEnd="170dp"
+        android:layout_marginBottom="387dp"
+        android:text="Traffic Police"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.31"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.797" />
+
+    <TextView
+        android:id="@+id/versionInfo"
+        android:layout_width="210dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="98dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="380dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="50dp"
+        android:text="Version 1.0"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView16"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="210dp"
+        android:layout_height="168dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="246dp"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.382"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/versionInfo"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:layout_width="260dp"
+        android:layout_height="40dp"
+        android:drawableStart="@drawable/ic_copyright_icon"
+        android:drawablePadding="10dp"
+        android:padding="7dp"
+        android:text="2020 Traffic Police Inc."
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
