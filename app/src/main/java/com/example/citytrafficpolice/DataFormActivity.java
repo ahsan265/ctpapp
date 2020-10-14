@@ -106,7 +106,7 @@ public class DataFormActivity extends AppCompatActivity {
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String congdetl= "";
+                String congdetl= "Not Defined";
                 Intent intent = getIntent();
                 String origin = intent.getStringExtra("origin");
                 String destination = intent.getStringExtra("destination");
