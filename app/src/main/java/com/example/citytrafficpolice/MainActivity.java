@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isInTrackingMode;
     Point destinationPoint;
     Point originPoint;
-
+    SharedPreferences preferences;
     private TextView name;
     private TextView emailAddress;
     public static WardenAccount wardenAccount;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String jwt = preferences.getString("jwt", "");
         String fullName = preferences.getString("fullName", "");
         String id = preferences.getString("id", "");
@@ -326,6 +327,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("email","");
+                                editor.putString("jwt","");
+                                editor.putString("FullName","");
+                                editor.putString("id","");
+                                editor.putString("CNIC","");
+
+                                editor.apply();
                                 openLoginActivity();
                             }
                         })
