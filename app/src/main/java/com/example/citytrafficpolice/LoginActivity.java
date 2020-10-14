@@ -3,12 +3,14 @@ package com.example.citytrafficpolice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -79,10 +82,10 @@ public class LoginActivity extends AppCompatActivity {
                     password.setError("Password can not be less than 6 characters");
                 } else {
                     Gson gson = new Gson();
-                    AndroidNetworking.post("http://10.0.2.2:8000/api/v1/auth/Login")
+                    AndroidNetworking.post("http://10.0.2.2:5000/api/v1/auth/Login")
                             .addBodyParameter("username", email.getText().toString())
                             .addBodyParameter("password", password.getText().toString())
-                            /*.addHeaders("Authorization","Bearer " + token)*/
+                            //.addHeaders("Authorization","Bearer " + token)
                             .setTag("test")
                             .setPriority(Priority.HIGH)
                             .build()
@@ -94,12 +97,12 @@ public class LoginActivity extends AppCompatActivity {
                                     try
                                     {
                                         status = response.get("status").toString();
+                                       // Log.i("status",status);
                                     }
                                     catch (JSONException e)
                                     {
                                         e.printStackTrace();
                                     }
-
                                     if (status != null && status.equals("200"))
                                     {
                                         JSONObject data;
@@ -107,11 +110,27 @@ public class LoginActivity extends AppCompatActivity {
                                         try
                                         {
                                             data = response.getJSONObject("data");
-
+                                            Log.i("data",data.toString());
                                             String jwtToken = response.get("jwtToken").toString();
+                                            String id=data.get("id").toString();
+                                            String fullname=data.get("fullName").toString();
+                                            String email=data.get("email").toString();
+                                            String phone=data.get("phone").toString();
+                                            String CNIC=data.get("CNIC").toString();
+                                            Log.i("id",id);
                                             wardenAccount = gson.fromJson(data.toString(), WardenAccount.class);
-                                            wardenAccount.setJwtToken(jwtToken);
+                                            //wardenAccount.setJwtToken(jwtToken);
+                                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            editor.putString("jwt",jwtToken);
+                                            editor.putString("id",id);
+                                            editor.putString("fullName",fullname);
+                                            editor.putString("email",email);
+                                            editor.putString("phone",phone);
+                                            editor.putString("CNIC",CNIC);
 
+                                            editor.apply();
+                                            Log.i("status",jwtToken);
                                             MyAccountActivity.wardenAccount = wardenAccount;
                                             DataFormActivity.wardenAccount = wardenAccount;
                                             MainActivity.wardenAccount = wardenAccount;

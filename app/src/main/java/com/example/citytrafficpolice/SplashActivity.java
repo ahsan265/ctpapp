@@ -2,9 +2,13 @@ package com.example.citytrafficpolice;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 public class SplashActivity extends AppCompatActivity
 {
@@ -17,10 +21,22 @@ public class SplashActivity extends AppCompatActivity
         {
             @Override
             public void run()
-            {
-                Intent mInHome = new Intent(SplashActivity.this, LoginActivity.class);
-                SplashActivity.this.startActivity(mInHome);
-                SplashActivity.this.finish();
+            { SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String name = preferences.getString("jwt", "");
+                Log.i("jwt",name);
+                if(!name.equalsIgnoreCase(""))
+                {
+                    Intent mInHome = new Intent(SplashActivity.this, MainActivity.class);
+                    SplashActivity.this.startActivity(mInHome);
+                    SplashActivity.this.finish();
+                }
+                else
+                {
+                    Intent mInHome = new Intent(SplashActivity.this, LoginActivity.class);
+                    SplashActivity.this.startActivity(mInHome);
+                    SplashActivity.this.finish();
+                }
+
             }
         },3000);
     }

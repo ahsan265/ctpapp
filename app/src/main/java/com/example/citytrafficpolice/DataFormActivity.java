@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -27,6 +30,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -38,6 +42,8 @@ import java.util.Locale;
 public class DataFormActivity extends AppCompatActivity {
     private EditText wardenName;
     private EditText wardenID;
+    private EditText congestiondetails;
+
     Spinner timeDuration;
     Spinner roadBlock;
     Spinner trafficIncident;
@@ -51,21 +57,25 @@ public class DataFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dataform);
 
-        timeDate = findViewById(R.id.timeDate);
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy          h:mm a");
-        String dateTime = simpleDateFormat.format(calendar.getTime());
-        timeDate.setText(dateTime);
+//        timeDate = findViewById(R.id.timeDate);
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy          h:mm a");
+//        String dateTime = simpleDateFormat.format(calendar.getTime());
+//        timeDate.setText(dateTime);
 
         // Submit Button
         Submit = findViewById(R.id.Submit);
-
+        congestiondetails=findViewById(R.id.congestiondetails);
         wardenName = findViewById(R.id.wardenName);
         wardenID = findViewById(R.id.wardenID);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String jwt = preferences.getString("jwt", "");
+        String fullName = preferences.getString("fullName", "");
+        String id = preferences.getString("id", "");
 
-        if (wardenAccount != null) {
-            wardenName.setText(wardenAccount.getFullName());
-            wardenID.setText(wardenAccount.getId());
+        if (!fullName.equalsIgnoreCase("")) {
+            wardenName.setText(fullName);
+            wardenID.setText(id);
         }
 
         // Internet Connection
@@ -96,22 +106,27 @@ public class DataFormActivity extends AppCompatActivity {
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String congdetl= "";
                 Intent intent = getIntent();
-                String latitude = intent.getStringExtra("origin");
-                String longitude = intent.getStringExtra("destination");
-
-//               String trafficType = trafficIncident.getSelectedItem().toString();
-                String trafficType = "road accident";
-                String congestionDetails = trafficIncident.getSelectedItem().toString();
+                String origin = intent.getStringExtra("origin");
+                String destination = intent.getStringExtra("destination");
+                String trafficType = trafficIncident.getSelectedItem().toString();
+//                String trafficType = "road accident";
+               // String congestionDetails = trafficIncident.getSelectedItem().toString();
                 String congestionTime = timeDuration.getSelectedItem().toString();
+
+                 congdetl=congestiondetails.getText().toString();
+                Log.i("response", trafficType);
+
+                Log.i("response", jwt);
                 Gson gson = new Gson();
-                AndroidNetworking.post("http://10.0.2.2:8000/api/v1/report/report-traffic")
+                AndroidNetworking.post("http://10.0.2.2:5000/api/v1/report/report-traffic")
                         .addBodyParameter("congestionTime", congestionTime)
                         .addBodyParameter("trafficType", trafficType)
-                        .addBodyParameter("location", latitude + "-" + longitude)
-                        .addBodyParameter("congestionDetails", congestionDetails)
-                        .addHeaders("Authorization", wardenAccount.getJwtToken())
+                        .addBodyParameter("origin", origin)
+                        .addBodyParameter("destination", destination)
+                        .addBodyParameter("congestionDetails", congdetl)
+                        .addHeaders("Authorization",jwt)
                         .setTag("test")
                         .setPriority(Priority.HIGH)
                         .build()
@@ -119,7 +134,16 @@ public class DataFormActivity extends AppCompatActivity {
                             @SuppressLint("ResourceAsColor")
                             @Override
                             public void onResponse(JSONObject response) {
-
+                                String status = null;
+                                try
+                                {
+                                    status = response.get("status").toString();
+                                    Log.i("status",status);
+                                }
+                                catch (JSONException e)
+                                {
+                                    e.printStackTrace();
+                                }
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(DataFormActivity.this,R.style.CustomAlertDialog);
                                 ViewGroup viewGroup = findViewById(android.R.id.content);
                                 View dialogView = LayoutInflater.from(v.getContext()).inflate(R.layout.dataformdialog, viewGroup, false);
@@ -142,6 +166,7 @@ public class DataFormActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(ANError error) {
+                                Log.i("error",error.toString());
                                 Toast.makeText(DataFormActivity.this, "Failed to send the Data!", Toast.LENGTH_LONG).show();
                             }
                         });

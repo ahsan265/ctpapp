@@ -2,6 +2,7 @@ package com.example.citytrafficpolice;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -91,7 +93,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String jwt = preferences.getString("jwt", "");
+        String fullName = preferences.getString("fullName", "");
+        String id = preferences.getString("id", "");
+        String Email = preferences.getString("email", "");
+        String CNIC = preferences.getString("CNIC", "");
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
         View headerView = navigationView.getHeaderView(0);
 
@@ -108,11 +115,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         versionInfo.setText("App Version  " +version);
 
-        if (wardenAccount != null)
+        if (!fullName.equalsIgnoreCase(""))
         {
-            navUsername.setText(wardenAccount.getFullName());
-            navEmailAddress.setText(wardenAccount.getEmail());
+            navUsername.setText(fullName);
+            navEmailAddress.setText(Email);
         }
+
 
         //Maps
         mapView = findViewById(R.id.mapView);
@@ -337,8 +345,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void openDataForm()
     {
         Intent intent = new Intent(this, DataFormActivity.class);
-        intent.putExtra("origin",originPoint.latitude()+"~"+originPoint.longitude());
-        intent.putExtra("destination",destinationPoint.latitude()+"~"+destinationPoint.longitude());
+        intent.putExtra("origin",originPoint.longitude()+","+originPoint.latitude());
+        intent.putExtra("destination",destinationPoint.longitude()+","+destinationPoint.latitude());
         startActivity(intent);
     }
 

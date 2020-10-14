@@ -27,10 +27,10 @@
 
     <string-array name="Traffic_Incident">
         <item>Weather</item>
-        <item>Accident</item>
-        <item>Official Trip</item>
-        <item>Public Protest</item>
+        <item>Road block</item>
+        <item>Road Accident</item>
         <item>Road Maintenance</item>
+        <item>Vip Movement</item>
         <item>Traffic Congestion</item>
     </string-array>
 

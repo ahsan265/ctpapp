@@ -1,6 +1,7 @@
 package com.example.citytrafficpolice;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.io.IOException;
 
@@ -32,6 +34,12 @@ public class MyAccountActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.name);
         wardenId = (TextView) findViewById(R.id.wardenId);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String jwt = preferences.getString("jwt", "");
+        String fullName = preferences.getString("fullName", "");
+        String id = preferences.getString("id", "");
+        String Email = preferences.getString("email", "");
+        String CNIC = preferences.getString("CNIC", "");
 
         TextView setImage = (TextView) findViewById(R.id.setImage);
         setImage.setOnClickListener(new View.OnClickListener() {
@@ -44,13 +52,14 @@ public class MyAccountActivity extends AppCompatActivity {
             }
         });
 
-        if (wardenAccount != null)
+        if (!fullName.equalsIgnoreCase(""))
         {
-            name.setText(wardenAccount.getFullName());
-            wardenId.setText(wardenAccount.getId());
-            email.setText(wardenAccount.getEmail());
-            cnic.setText(wardenAccount.getCNIC());
+            name.setText(fullName);
+            wardenId.setText(id);
+            email.setText(Email);
+            cnic.setText(CNIC);
         }
+
  }
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
